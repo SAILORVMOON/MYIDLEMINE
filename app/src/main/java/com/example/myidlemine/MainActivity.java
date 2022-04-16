@@ -11,9 +11,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -21,21 +23,21 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ProgressBar progressBar;
-    ScrollView scrollView;
-    ImageView main, shop, upgrade;
-    ListView listView1, listView2, listView3;
-    double prgrs = 0;
-    TextView textView;
-    double multier = 1;
-    long time;
-    String sec;
+    private ProgressBar progressBar;
+    private ImageView main, shop, upgrade;
+    private ListView listView1, listView2, listView3;
+    private double prgrs = 0, multipler = 1;
+    private TextView money, level;
+    private int factories = 1;
     Date date;
-    MyAsyncTask myAsyncTask;
+    Handler handler, handler2, handler3;
+    long nowTime, defen, lastTime;
+    int moneyInt, levelInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,86 +47,136 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        main.getLayoutParams().height = (int) (height*0.15);
-        main.getLayoutParams().width = (int) (width*0.34);
-        shop.getLayoutParams().height = (int) (height*0.15);
-        shop.getLayoutParams().width = (int) (width*0.34);
-        upgrade.getLayoutParams().height = (int) (height*0.15);
-        upgrade.getLayoutParams().width = (int) (width*0.34);
+        int height = (int) (size.y * 0.15);
+        int width = (int) (size.x * 0.34);
+        main.getLayoutParams().height = height;
+        main.getLayoutParams().width = width;
+        shop.getLayoutParams().height = height;
+        shop.getLayoutParams().width = width;
+        upgrade.getLayoutParams().height = height;
+        upgrade.getLayoutParams().width = width;
     }
 
 
+    protected void init() {
 
-
-    protected void init(){
         progressBar = findViewById(R.id.progressBar);
-        scrollView = findViewById(R.id.scrollView2);
-        main = (ImageView) findViewById(R.id.main);
+        main = findViewById(R.id.main);
         main.setOnClickListener(this);
         shop = findViewById(R.id.shop);
+        shop.setOnClickListener(this);
         upgrade = findViewById(R.id.upgrade);
         listView1 = findViewById(R.id.listview1);
         listView2 = findViewById(R.id.listview2);
         listView3 = findViewById(R.id.listview3);
-        textView = findViewById(R.id.textView);
+        money = findViewById(R.id.money);
+        level = findViewById(R.id.level);
         date = new Date();
-        sec = "";
+        lastTime = date.getTime()/1000;
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                moneyInt += msg.what * factories;
+
+                money.setText(String.valueOf(moneyInt));
+            }
+        };
+        handler2 = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                prgrs += multipler * factories * (defen);
+            }
+        };
+        handler3 = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                level.setText(levelInt);
+            }
+        };
+        SetterTime setterTime = new SetterTime();
+        setterTime.start();
         AutoAdd autoAdd = new AutoAdd();
         autoAdd.start();
-        myAsyncTask = new MyAsyncTask();
-        myAsyncTask.execute();
+        CheckLevel checkLevel = new CheckLevel();
+        checkLevel.start();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.main:{
-                prgrs+= multier;
+        switch (view.getId()) {
+            case R.id.main: {
+                prgrs += multipler * factories;
                 progressBar.setProgress((int) prgrs);
-                if(progressBar.getProgress() == 100){
-                    prgrs = 0;
-                    progressBar.setProgress(0);
-                    multier *= 0.9;
-                }
-                textView.setText(sec);
+                money.setText(String.valueOf(money));
                 break;
             }
-            case R.id.shop:{
+            case R.id.shop: {
+                factories ++;
                 break;
             }
-            case R.id.upgrade:{
+            case R.id.upgrade: {
                 break;
             }
         }
     }
 
+    class SetterTime extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                date = new Date();//новое время
+                nowTime = date.getTime()/1000;//сейчашние секунды
+                if(lastTime - nowTime != 0){
+                    defen = nowTime - lastTime;//разница секунд
+                }
+                lastTime = date.getTime()/1000;//время которое будет старым
+                handler.sendEmptyMessage((int)defen);
+                try {
+                    sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     class AutoAdd extends Thread{
         @Override
         public void run() {
+            while (true){
+                handler2.sendEmptyMessage((int) defen);
+                defen = 0;
+                try {
+                    sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-            while(true){
-                date = new Date();
-                time = date.getTime();
-                sec = String.valueOf(time);
             }
         }
     }
-
-    class MyAsyncTask extends AsyncTask<Void, Void, Void>{
+    class CheckLevel extends Thread{
         @Override
-        protected Void doInBackground(Void... voids) {
-            int i = 0;
-            while (i < 10){
-
+        public void run() {
+            while (true){
+                if (progressBar.getProgress() >= 100) {
+                    levelInt ++;
+                    handler3.sendEmptyMessage(1);
+                    prgrs = 0;
+                    progressBar.setProgress(0);
+                    multipler *= 0.9;
+                    try {
+                        sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            return null;
-        }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            textView.setText(sec);
         }
     }
 }

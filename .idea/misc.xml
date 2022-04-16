@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/lesha/AndroidStudioProjects/MYIDLEMINE/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Users/lesha/AndroidStudioProjects/MYIDLEMINE/app/src/main/res/layout/activity_main.xml" value="0.7568181818181818" />
+        <entry key="..\:/Users/lesha/AndroidStudioProjects/MYIDLEMINE/app/src/main/res/layout/activity_shop2.xml" value="0.46328125" />
+        <entry key="..\:/Users/lesha/AndroidStudioProjects/MYIDLEMINE/app/src/main/res/layout/one_shop_worker.xml" value="0.55" />
+        <entry key="..\:/Users/lesha/AndroidStudioProjects/MYIDLEMINE/app/src/main/res/layout/shop_workers.xml" value="1.5" />
       </map>
     </option>
   </component>
