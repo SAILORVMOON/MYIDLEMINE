@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView money, level;
     private int factories = 1;
     Date date;
-    Handler handler, handler2, handler3;
+    Handler handler;
     long nowTime, defen, lastTime;
     int moneyInt, levelInt;
 
@@ -74,33 +74,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         date = new Date();
         lastTime = date.getTime()/1000;
 
-        handler = new Handler() {
+        handler = new Handler(getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                moneyInt += msg.what * factories;
+                switch (msg.arg1){
+                    case 1:{
+                        moneyInt += msg.what * factories;
+                        money.setText(String.valueOf(moneyInt));
+                        prgrs += multipler * factories * (defen);
+                        progressBar.setProgress((int)prgrs);
+                        defen = 0;
+                        break;
+                    }
+                    case 2:{
+                        break;
+                    }
+                    case 3:{
+                        level.setText(String.valueOf(levelInt));
+                        moneyInt += 50;
+                        break;
+                    }
+                }
 
-                money.setText(String.valueOf(moneyInt));
-            }
-        };
-        handler2 = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                prgrs += multipler * factories * (defen);
-            }
-        };
-        handler3 = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                level.setText(levelInt);
+
             }
         };
         SetterTime setterTime = new SetterTime();
         setterTime.start();
-        AutoAdd autoAdd = new AutoAdd();
-        autoAdd.start();
         CheckLevel checkLevel = new CheckLevel();
         checkLevel.start();
     }
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.main: {
                 prgrs += multipler * factories;
                 progressBar.setProgress((int) prgrs);
-                money.setText(String.valueOf(money));
+                money.setText(String.valueOf(moneyInt));
                 break;
             }
             case R.id.shop: {
@@ -131,31 +132,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             while (true) {
                 date = new Date();//новое время
                 nowTime = date.getTime()/1000;//сейчашние секунды
-                if(lastTime - nowTime != 0){
-                    defen = nowTime - lastTime;//разница секунд
-                }
+                defen = nowTime - lastTime;//разница секунд
                 lastTime = date.getTime()/1000;//время которое будет старым
-                handler.sendEmptyMessage((int)defen);
+                Message msg = new Message();
+                msg.arg1 = 1;
+                msg.what = (int)defen;
+                handler.sendMessage(msg);
                 try {
                     sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-        }
-    }
-    class AutoAdd extends Thread{
-        @Override
-        public void run() {
-            while (true){
-                handler2.sendEmptyMessage((int) defen);
-                defen = 0;
-                try {
-                    sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
             }
         }
     }
@@ -165,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             while (true){
                 if (progressBar.getProgress() >= 100) {
                     levelInt ++;
-                    handler3.sendEmptyMessage(1);
+                    Message msg = new Message();
+                    msg.arg1 = 3;
+                    handler.sendMessage(msg);
                     prgrs = 0;
                     progressBar.setProgress(0);
                     multipler *= 0.9;
