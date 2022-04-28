@@ -1,29 +1,20 @@
 package com.example.myidlemine;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,34 +22,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressBar progressBar;
     private ImageView main, shop, upgrade;
     private ListView listView1, listView2, listView3;
-    private double prgrs = 0, multipler = 1;
+    private double prgrs = 0, multiplier = 1;
     private TextView money, level;
     private int factories = 1;
     Date date;
     Handler handler;
     long nowTime, defen, lastTime;
     int moneyInt, levelInt;
+    DBData dbData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = (int) (size.y * 0.15);
-        int width = (int) (size.x * 0.34);
-        main.getLayoutParams().height = height;
-        main.getLayoutParams().width = width;
-        shop.getLayoutParams().height = height;
-        shop.getLayoutParams().width = width;
-        upgrade.getLayoutParams().height = height;
-        upgrade.getLayoutParams().width = width;
+        dbData = new DBData(this);
+        try {
+            Data data = dbData.select(1);
+        }catch (Exception e){
+            dbData.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
+        }
+        Data data = dbData.select(1);
+        Log.d("MY", "получил"+String.valueOf(data.getId()));
+        if(data.getFactories() == null){
+            dbData.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
+            data = dbData.select(1);
+
+        }
+        levelInt = Integer.parseInt(data.getLevel());
+        level.setText(String.valueOf(levelInt));
+        moneyInt = Integer.parseInt(data.getMoney());
+        money.setText(String.valueOf(moneyInt));
+        prgrs = Double.parseDouble(data.getProgress());
+        progressBar.setProgress((int) prgrs);
+        factories = Integer.parseInt(data.getFactories());
+        multiplier = Double.parseDouble(data.getMultiplier());
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(data.getLevel() + data.getMoney() + data.getProgress() + data.getMultiplier() + data.getFactories());
     }
 
 
     protected void init() {
+
 
         progressBar = findViewById(R.id.progressBar);
         main = findViewById(R.id.main);
@@ -73,6 +78,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         level = findViewById(R.id.level);
         date = new Date();
         lastTime = date.getTime()/1000;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = (int) (size.y * 0.15);
+        int width = (int) (size.x * 0.34);
+        main.getLayoutParams().height = height;
+        main.getLayoutParams().width = width;
+        shop.getLayoutParams().height = height;
+        shop.getLayoutParams().width = width;
+        upgrade.getLayoutParams().height = height;
+        upgrade.getLayoutParams().width = width;
 
         handler = new Handler(getMainLooper()) {
             @Override
@@ -82,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case 1:{
                         moneyInt += msg.what * factories;
                         money.setText(String.valueOf(moneyInt));
-                        prgrs += multipler * factories * (defen);
+                        prgrs += multiplier * factories * (defen);
                         progressBar.setProgress((int)prgrs);
                         defen = 0;
                         break;
@@ -111,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main: {
-                prgrs += multipler * factories;
+                prgrs += multiplier * factories;
                 progressBar.setProgress((int) prgrs);
                 money.setText(String.valueOf(moneyInt));
                 break;
@@ -157,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     handler.sendMessage(msg);
                     prgrs = 0;
                     progressBar.setProgress(0);
-                    multipler *= 0.9;
+                    multiplier *= 0.9;
                     try {
                         sleep(200);
                     } catch (InterruptedException e) {
@@ -167,5 +183,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        int n = dbData.update(new Data(1, String.valueOf(levelInt), String.valueOf(moneyInt), String.valueOf(prgrs), String.valueOf(multiplier), String.valueOf(factories)));
+        Log.d("MY", "обновил"+String.valueOf(n));
+        super.onDestroy();
     }
 }
