@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,36 +30,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Handler handler;
     long nowTime, defen, lastTime;
     int moneyInt, levelInt;
-    DBData dbData;
+    DBDatame dbDatame;
+    DBShopWorker dbShopWorker;
+    ArrayList<ShopWorker> listToAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        dbData = new DBData(this);
+        dbDatame = new DBDatame(this);
         try {
-            Data data = dbData.select(1);
+            Datame datame = dbDatame.select(1);
         }catch (Exception e){
-            dbData.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
+            dbDatame.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
         }
-        Data data = dbData.select(1);
-        Log.d("MY", "получил"+String.valueOf(data.getId()));
-        if(data.getFactories() == null){
-            dbData.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
-            data = dbData.select(1);
+        Datame datame = dbDatame.select(1);
+        if(datame.getFactories() == null){
+            dbDatame.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
+            datame = dbDatame.select(1);
 
         }
-        levelInt = Integer.parseInt(data.getLevel());
+        dbShopWorker = new DBShopWorker(this);
+        try {
+            ShopWorker shopWorker = dbShopWorker.select(1);
+        }catch (Exception e){
+            dbShopWorker.insert(String.valueOf(1), String.valueOf(100));
+            for (int i = 0; i < 49; i++) {
+                dbShopWorker.insert(String.valueOf(0), String.valueOf(100*Math.pow(i, 2)));
+            }
+        }
+        listToAdapter = new ArrayList<>();
+        for (int i = 1; i < 51; i++) {
+            ShopWorker shopWorker = dbShopWorker.select(i);
+            listToAdapter.add(shopWorker);
+        }
+        ShopWorkerAdapter shopWorkerAdapter = new ShopWorkerAdapter(this, listToAdapter);
+        listView2.setAdapter(shopWorkerAdapter);
+
+        levelInt = Integer.parseInt(datame.getLevel());
         level.setText(String.valueOf(levelInt));
-        moneyInt = Integer.parseInt(data.getMoney());
+        moneyInt = Integer.parseInt(datame.getMoney());
         money.setText(String.valueOf(moneyInt));
-        prgrs = Double.parseDouble(data.getProgress());
+        prgrs = Double.parseDouble(datame.getProgress());
         progressBar.setProgress((int) prgrs);
-        factories = Integer.parseInt(data.getFactories());
-        multiplier = Double.parseDouble(data.getMultiplier());
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(data.getLevel() + data.getMoney() + data.getProgress() + data.getMultiplier() + data.getFactories());
+        factories = Integer.parseInt(datame.getFactories());
+        multiplier = Double.parseDouble(datame.getMultiplier());
     }
 
 
@@ -133,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case R.id.shop: {
-                factories ++;
+                listView2.setVisibility(View.VISIBLE);
                 break;
             }
             case R.id.upgrade: {
@@ -188,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
 
-        int n = dbData.update(new Data(1, String.valueOf(levelInt), String.valueOf(moneyInt), String.valueOf(prgrs), String.valueOf(multiplier), String.valueOf(factories)));
+        int n = dbDatame.update(new Datame(1, String.valueOf(levelInt), String.valueOf(moneyInt), String.valueOf(prgrs), String.valueOf(multiplier), String.valueOf(factories)));
         Log.d("MY", "обновил"+String.valueOf(n));
         super.onDestroy();
     }

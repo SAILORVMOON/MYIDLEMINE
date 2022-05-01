@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBData {
+public class DBDatame {
 
     private static final String DATABASE_NAME = "myData.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_NAME = "myDataTable";
 
     private static final String COLUMN_ID = "id";
@@ -29,7 +29,7 @@ public class DBData {
 
     private SQLiteDatabase mDataBase;
 
-    public DBData(Context context) {
+    public DBDatame(Context context) {
         OpenHelper mOpenHelper = new OpenHelper(context);
         mDataBase = mOpenHelper.getWritableDatabase();
     }
@@ -44,7 +44,7 @@ public class DBData {
         return mDataBase.insert(TABLE_NAME, null, cv);
     }
 
-    public int update(Data md) {
+    public int update(Datame md) {
         ContentValues cv=new ContentValues();
         cv.put(COLUMN_LEVEL, md.getLevel());
         cv.put(COLUMN_MONEY, md.getMoney());
@@ -54,7 +54,7 @@ public class DBData {
         return mDataBase.update(TABLE_NAME, cv, COLUMN_ID + " = ?",new String[] { String.valueOf(md.getId())});
     }
 
-    public Data select(long id) {
+    public Datame select(long id) {
         Cursor mCursor = mDataBase.query(TABLE_NAME, null, COLUMN_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
 
         mCursor.moveToFirst();
@@ -64,7 +64,7 @@ public class DBData {
         String progress = mCursor.getString(NUM_COLUMN_PROGRESS);
         String multiplier = mCursor.getString(NUM_COLUMN_MULTIPLIER);
         String factories = mCursor.getString(NUM_COLUMN_FACTORIES);
-        return new Data(idd, level, money, progress, multiplier, factories);
+        return new Datame(idd, level, money, progress, multiplier, factories);
     }
 
     private class OpenHelper extends SQLiteOpenHelper {

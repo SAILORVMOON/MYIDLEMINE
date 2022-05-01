@@ -2,7 +2,7 @@ package com.example.myidlemine;
 
 import java.io.Serializable;
 
-public class Data implements Serializable {
+public class Datame implements Serializable {
     private long id;
     private String level;
     private String money;
@@ -10,7 +10,7 @@ public class Data implements Serializable {
     private String multiplier;
     private String factories;
 
-    public Data(long id, String level, String money, String progress, String multiplier, String factories) {
+    public Datame(long id, String level, String money, String progress, String multiplier, String factories) {
         this.id = id;
         this.level = level;
         this.money = money;
