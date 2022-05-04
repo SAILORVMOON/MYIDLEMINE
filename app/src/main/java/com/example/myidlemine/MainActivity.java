@@ -10,10 +10,13 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ProgressBar progressBar;
     private ImageView main, shop, upgrade;
-    private ListView listView1, listView2, listView3;
+    private ListView listView1, listView2;
     private double prgrs = 0, multiplier = 1;
     private TextView money, level;
     private int factories = 1;
@@ -33,41 +36,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     DBDatame dbDatame;
     DBShopWorker dbShopWorker;
     ArrayList<ShopWorker> listToAdapter;
+    LinearLayout linarrows;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+
+    }
+
+    protected void init() {
+        linarrows = findViewById(R.id.linarrows);
+        level = findViewById(R.id.level);
+        progressBar = findViewById(R.id.progressBar);
+        money = findViewById(R.id.money);
+        listView1 = findViewById(R.id.listview1);
+        listView2 = findViewById(R.id.listview2);
+        main = findViewById(R.id.main);
+        shop = findViewById(R.id.shop);
+        upgrade = findViewById(R.id.upgrade);
+        main.setOnClickListener(this);
+        shop.setOnClickListener(this);
+        upgrade.setOnClickListener(this);
+
         dbDatame = new DBDatame(this);
+        Datame datame;
         try {
-            Datame datame = dbDatame.select(1);
+            datame = dbDatame.select(1);
         }catch (Exception e){
             dbDatame.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
+            datame = dbDatame.select(1);
         }
-        Datame datame = dbDatame.select(1);
         if(datame.getFactories() == null){
             dbDatame.insert(String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(1), String.valueOf(1));
             datame = dbDatame.select(1);
-
         }
-        dbShopWorker = new DBShopWorker(this);
-        try {
-            ShopWorker shopWorker = dbShopWorker.select(1);
-        }catch (Exception e){
-            dbShopWorker.insert(String.valueOf(1), String.valueOf(100));
-            for (int i = 0; i < 49; i++) {
-                dbShopWorker.insert(String.valueOf(0), String.valueOf(100*Math.pow(i, 2)));
-            }
-        }
-        listToAdapter = new ArrayList<>();
-        for (int i = 1; i < 51; i++) {
-            ShopWorker shopWorker = dbShopWorker.select(i);
-            listToAdapter.add(shopWorker);
-        }
-        ShopWorkerAdapter shopWorkerAdapter = new ShopWorkerAdapter(this, listToAdapter);
-        listView2.setAdapter(shopWorkerAdapter);
-
         levelInt = Integer.parseInt(datame.getLevel());
         level.setText(String.valueOf(levelInt));
         moneyInt = Integer.parseInt(datame.getMoney());
@@ -76,23 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBar.setProgress((int) prgrs);
         factories = Integer.parseInt(datame.getFactories());
         multiplier = Double.parseDouble(datame.getMultiplier());
-    }
 
 
-    protected void init() {
-
-
-        progressBar = findViewById(R.id.progressBar);
-        main = findViewById(R.id.main);
-        main.setOnClickListener(this);
-        shop = findViewById(R.id.shop);
-        shop.setOnClickListener(this);
-        upgrade = findViewById(R.id.upgrade);
-        listView1 = findViewById(R.id.listview1);
-        listView2 = findViewById(R.id.listview2);
-        listView3 = findViewById(R.id.listview3);
-        money = findViewById(R.id.money);
-        level = findViewById(R.id.level);
         date = new Date();
         lastTime = date.getTime()/1000;
         Display display = getWindowManager().getDefaultDisplay();
@@ -137,6 +126,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setterTime.start();
         CheckLevel checkLevel = new CheckLevel();
         checkLevel.start();
+
+        dbShopWorker = new DBShopWorker(this);
+        try {
+            ShopWorker shopWorker = dbShopWorker.select(1);
+        }catch (Exception e){
+            dbShopWorker.insert(String.valueOf(1), String.valueOf(100));
+            for (int i = 2; i < 11; i++) {
+                dbShopWorker.insert(String.valueOf(0), String.valueOf((int)(100*Math.pow(i, 2))));
+            }
+        }
+        listToAdapter = new ArrayList<>();
+        for (int i = 1; i < 11; i++) {
+            ShopWorker shopWorker = dbShopWorker.select(i);
+            listToAdapter.add(shopWorker);
+        }
+        ShopWorkerAdapter shopWorkerAdapter = new ShopWorkerAdapter(this, listToAdapter);
+        listView2.setAdapter(shopWorkerAdapter);
+        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), listToAdapter.get(position).price, Toast.LENGTH_SHORT).show();
+                int newLevel = (int) ((int) Integer.parseInt(listToAdapter.get(position).level) + 1);
+                int newPrice = (int) ((int) Integer.parseInt(listToAdapter.get(position).price) * 1.1);
+                int n = dbShopWorker.update(new ShopWorker(position+1, String.valueOf(newLevel), String.valueOf(newPrice)));
+                listToAdapter = new ArrayList<>();
+                for (int i = 1; i < 11; i++) {
+                    ShopWorker shopWorker = dbShopWorker.select(i);
+                    listToAdapter.add(shopWorker);
+                }
+
+            }
+        });
+
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -144,16 +166,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main: {
-                prgrs += multiplier * factories;
-                progressBar.setProgress((int) prgrs);
-                money.setText(String.valueOf(moneyInt));
+                listView1.setVisibility(View.VISIBLE);
+                listView2.setVisibility(View.GONE);
+                linarrows.setVisibility(View.GONE);
                 break;
             }
             case R.id.shop: {
+                listView1.setVisibility(View.GONE);
                 listView2.setVisibility(View.VISIBLE);
+                linarrows.setVisibility(View.GONE);
                 break;
             }
             case R.id.upgrade: {
+                listView1.setVisibility(View.GONE);
+                listView2.setVisibility(View.GONE);
+                linarrows.setVisibility(View.VISIBLE);
                 break;
             }
         }
@@ -204,9 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-
         int n = dbDatame.update(new Datame(1, String.valueOf(levelInt), String.valueOf(moneyInt), String.valueOf(prgrs), String.valueOf(multiplier), String.valueOf(factories)));
-        Log.d("MY", "обновил"+String.valueOf(n));
         super.onDestroy();
     }
 }
