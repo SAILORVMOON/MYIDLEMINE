@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBShopWorker {
     private static final String DATABASE_NAME = "shopWorker.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
     private static final String TABLE_NAME = "shopWorkerTable";
 
     private static final String COLUMN_ID = "id";

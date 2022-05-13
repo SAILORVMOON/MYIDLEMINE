@@ -47,8 +47,10 @@ public class ShopWorkerAdapter extends BaseAdapter {
         }else {
             imageView.setImageResource(R.drawable.happy);
         }
-        TextView textView = view.findViewById(R.id.price);
-        textView.setText(shopWorker.getPrice());
+        TextView price = view.findViewById(R.id.price);
+        price.setText(shopWorker.getPrice());
+        TextView level = view.findViewById(R.id.level);
+        level.setText(shopWorker.getLevel());
         return view;
     }
 }

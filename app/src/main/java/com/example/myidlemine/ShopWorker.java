@@ -12,8 +12,6 @@ public class ShopWorker implements Serializable {
         this.price = price;
     }
 
-    public ShopWorker() {
-    }
 
     public long getId() {
         return id;

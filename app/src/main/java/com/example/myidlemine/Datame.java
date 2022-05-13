@@ -8,15 +8,17 @@ public class Datame implements Serializable {
     private String money;
     private String progress;
     private String multiplier;
-    private String factories;
+    private String name;
+    private String password;
 
-    public Datame(long id, String level, String money, String progress, String multiplier, String factories) {
+    public Datame(long id, String level, String money, String progress, String multiplier, String name, String password) {
         this.id = id;
         this.level = level;
         this.money = money;
         this.progress = progress;
         this.multiplier = multiplier;
-        this.factories=factories;
+        this.name = name;
+        this.password = password;
     }
 
     public long getId() {
@@ -39,7 +41,11 @@ public class Datame implements Serializable {
         return multiplier;
     }
 
-    public String getFactories() {
-        return factories;
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

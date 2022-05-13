@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBDatame {
 
     private static final String DATABASE_NAME = "myData.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 8;
     private static final String TABLE_NAME = "myDataTable";
 
     private static final String COLUMN_ID = "id";
@@ -17,7 +17,8 @@ public class DBDatame {
     private static final String COLUMN_MONEY = "money";
     private static final String COLUMN_PROGRESS = "progress";
     private static final String COLUMN_MULTIPLIER = "multiplier";
-    private static final String COLUMN_FACTORIES = "factories";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_PASSWORD = "password";
 
 
     private static final int NUM_COLUMN_ID = 0;
@@ -25,7 +26,8 @@ public class DBDatame {
     private static final int NUM_COLUMN_MONEY = 2;
     private static final int NUM_COLUMN_PROGRESS = 3;
     private static final int NUM_COLUMN_MULTIPLIER= 4;
-    private static final int NUM_COLUMN_FACTORIES  = 5;
+    private static final int NUM_COLUMN_NAME = 5;
+    private static final int NUM_COLUMN_PASSWORD  = 6;
 
     private SQLiteDatabase mDataBase;
 
@@ -34,13 +36,14 @@ public class DBDatame {
         mDataBase = mOpenHelper.getWritableDatabase();
     }
 
-    public long insert(String level, String money, String progress, String multiplier, String factories) {
+    public long insert(String level, String money, String progress, String multiplier, String factories, String name, String password) {
         ContentValues cv=new ContentValues();
         cv.put(COLUMN_LEVEL, level);
         cv.put(COLUMN_MONEY, money);
         cv.put(COLUMN_PROGRESS, progress);
         cv.put(COLUMN_MULTIPLIER, multiplier);
-        cv.put(COLUMN_FACTORIES, factories);
+        cv.put(COLUMN_NAME, name);
+        cv.put(COLUMN_PASSWORD, password);
         return mDataBase.insert(TABLE_NAME, null, cv);
     }
 
@@ -50,7 +53,6 @@ public class DBDatame {
         cv.put(COLUMN_MONEY, md.getMoney());
         cv.put(COLUMN_PROGRESS, md.getProgress());
         cv.put(COLUMN_MULTIPLIER, md.getMultiplier());
-        cv.put(COLUMN_FACTORIES, md.getFactories());
         return mDataBase.update(TABLE_NAME, cv, COLUMN_ID + " = ?",new String[] { String.valueOf(md.getId())});
     }
 
@@ -63,8 +65,9 @@ public class DBDatame {
         String money = mCursor.getString(NUM_COLUMN_MONEY);
         String progress = mCursor.getString(NUM_COLUMN_PROGRESS);
         String multiplier = mCursor.getString(NUM_COLUMN_MULTIPLIER);
-        String factories = mCursor.getString(NUM_COLUMN_FACTORIES);
-        return new Datame(idd, level, money, progress, multiplier, factories);
+        String name = mCursor.getString(NUM_COLUMN_NAME);
+        String password = mCursor.getString(NUM_COLUMN_PASSWORD);
+        return new Datame(idd, level, money, progress, multiplier, name, password);
     }
 
     private class OpenHelper extends SQLiteOpenHelper {
@@ -80,7 +83,8 @@ public class DBDatame {
                     COLUMN_MONEY + " TEXT, " +
                     COLUMN_PROGRESS + " TEXT,"+
                     COLUMN_MULTIPLIER + " TEXT,"+
-                    COLUMN_FACTORIES+" TEXT);";
+                    COLUMN_NAME + " TEXT,"+
+                    COLUMN_PASSWORD+" TEXT);";
             db.execSQL(query);
         }
 
