@@ -4,7 +4,8 @@
     android:layout_height="100dp"
     android:orientation="horizontal"
     android:layout_gravity="center"
-    android:maxHeight="100dp">
+    android:maxHeight="100dp"
+    android:background="#A08040">
     <ImageView
         android:id="@+id/worker"
         android:layout_width="wrap_content"
@@ -16,15 +17,37 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1">
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/level"/>
-        <TextView
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/levelup"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/level"
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/price"
-            android:hint="12345"/>
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/coin"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/price"
+                android:hint="12345"
+                android:textSize="20dp"/>
+        </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

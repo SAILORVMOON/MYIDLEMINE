@@ -8,13 +8,9 @@
     android:background="#FFFF00"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"/>
-
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +25,7 @@
         android:layout_weight="1">
 
         <TextView
+
             android:id="@+id/level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,16 +49,25 @@
             android:layout_marginRight="10dp"/>
     </LinearLayout>
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_weight="1000">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/lin_shop">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ваши работники"
+                android:gravity="center"
+                android:textSize="20dp"/>
             <ListView
                 android:id="@+id/listview_shop"
                 android:layout_width="match_parent"
@@ -74,10 +80,17 @@
             android:orientation="vertical"
             android:id="@+id/lin_boosters"
             android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="Бустеры"
+                android:gravity="center"/>
             <ListView
                 android:id="@+id/listview_boosters"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
             <ImageView
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
@@ -91,17 +104,63 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/linarrows"
-            android:visibility="gone">
-            <ImageView
+            android:visibility="gone"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_arrow_downward_24"
-                android:layout_weight="1"/>
-            <ImageView
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Цель игры"
+                    android:id="@+id/rules"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:text="Разработчик:B1zz4re_gms"/>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_arrow_upward_24"
-                android:layout_weight="1"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/tg"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="75dp"
+                    android:text="Подписывайтесь на мой Телеграм канал"
+                    android:textSize="25dp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:text="t.me/B1zz4regms"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/vk"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="75dp"
+                    android:text="Подписывайтесь на мою группу ВКонтакте"
+                    android:textSize="25dp"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:text="vk.com/b1zz4regms"/>
         </LinearLayout>
 
 
@@ -116,19 +175,22 @@
             android:id="@+id/shop"
             android:layout_width="128px"
             android:layout_height="96px"
-            android:src="@drawable/gnom"
+            android:src="@drawable/but_workers"
+            android:background="#8F9F46"
             android:layout_weight="1"/>
         <ImageView
             android:id="@+id/boosters"
             android:layout_width="128px"
             android:layout_height="96px"
-            android:src="@drawable/gnom"
+            android:src="@drawable/but_bstr"
+            android:background="#8F9F46"
             android:layout_weight="1"/>
         <ImageView
             android:id="@+id/upgrade"
             android:layout_width="128px"
             android:layout_height="96px"
-            android:src="@drawable/gnom"
+            android:src="@drawable/but_info"
+            android:background="#8F9F46"
             android:layout_weight="1"/>
     </LinearLayout>
 

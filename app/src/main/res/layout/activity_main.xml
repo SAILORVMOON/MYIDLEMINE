@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="10"
         android:textSize="35dp"
-        android:text="Make your acccount"/>
+        android:text="Создайте свой аккаунт"/>
 
     <EditText
         android:id="@+id/idName"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Enter your name" />
+        android:hint="Введите ваше имя" />
 
     <EditText
         android:id="@+id/idPassword"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Enter your password" />
+        android:hint="Введите ваш пароль" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Создать аккаунт" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,6 +1,8 @@
 package com.example.myidlemine;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.annotation.SuppressLint;
 import android.graphics.Point;
@@ -10,6 +12,7 @@ import android.os.Message;
 import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,7 +48,9 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
     ShopWorkerAdapter shopWorkerAdapter;
     boolean check = false;
     double boost = 1.0, moneyInt;
-
+    Button rules;
+    RulesDialog rulesDialog;
+    FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,10 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
                 handler2.sendMessage(msg);
             }
         });
+        rules = findViewById(R.id.rules);
+        rules.setOnClickListener(this);
+        rulesDialog = new RulesDialog();
+        manager = getSupportFragmentManager();
     }
 
     protected void init() {
@@ -160,8 +169,6 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
                         break;
                     }
                 }
-
-
             }
         };
         SetterTime setterTime = new SetterTime();
@@ -217,6 +224,7 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
         for (int i = 0; i < listToAdapter.size(); i++) {
             workerMultiplier += 0.1 *(i+1) * Integer.parseInt(listToAdapter.get(i).level);
         }
+        workerMultiplier += levelInt * 0.01;
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -244,6 +252,11 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
             }
             case R.id.coin:{
                 moneyInt+=1;
+                break;
+            }
+            case R.id.rules:{
+                rulesDialog.show(manager, "rules");
+                break;
             }
         }
     }
@@ -307,5 +320,9 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
             boost = 1;
             check = false;
         }
+    }
+    @Override
+    public void onBackPressed() {
+
     }
 }

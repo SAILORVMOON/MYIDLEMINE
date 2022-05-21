@@ -13,9 +13,6 @@
             android:name=".Game"
             android:exported="false" />
         <activity
-            android:name=".Shop"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
