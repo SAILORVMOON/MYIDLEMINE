@@ -165,7 +165,7 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
                     }
                     case 3:{
                         level.setText(String.valueOf(levelInt));
-                        moneyInt += 50;
+                        moneyInt += 50*levelInt;
                         break;
                     }
                 }
@@ -307,6 +307,11 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
     protected void onDestroy() {
         int n = dbDatame.update(new Datame(1, String.valueOf(levelInt), String.valueOf((int)moneyInt), String.valueOf(prgrs), String.valueOf(multiplier), null, null));
         super.onDestroy();
+        //TODO
+        for (int i = 1; i < 11; i++) {
+            ShopWorker shopWorker = listToAdapter.get(i-1);
+            dbShopWorker.update(shopWorker);
+        }
     }
     class BoosterWork extends Thread{
         @Override
@@ -323,6 +328,5 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
     }
     @Override
     public void onBackPressed() {
-
     }
 }
